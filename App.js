@@ -1,14 +1,18 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
-import {Platform, Text, View, TextInput, Button} from 'react-native';
-import styles  from './styles';
+import {Platform, View, ScrollView, Text} from 'react-native';
+import Showinfo from './showinfo';
+import Firebase from 'firebase';
+import Router from './components/Router'
+// import styles from './styles';
+import Login from './components/auth/Login';
+// import ActivityFeed from './components/partials/ActivityFeed';
+
+//Redux code
+// Provider for react redux
+import { Provider } from 'react-redux';
+import store from './store';
+//End of Redux code
+
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -21,33 +25,61 @@ export default class App extends Component {
 
   constructor(props){
     super(props);
-    this.state = { userIdText: '', password: ''};
+    this.state = {loggedIn: false}
   }
 
-  onLogin (){
-    let userId = this.state.userIdText;
-    let passwordText = this.state.password;
-    alert(userId + ' ' + passwordText);
+  componentWillMount(){
+    // Initialize Firebase
+    Firebase.initializeApp({
+      apiKey: "AIzaSyATxJMwj57OcDJWku9zfK0ACs5oYXTHwD0",
+      authDomain: "reactnative-test-a3d44.firebaseapp.com",
+      databaseURL: "https://reactnative-test-a3d44.firebaseio.com",
+      projectId: "reactnative-test-a3d44",
+      storageBucket: "",
+      messagingSenderId: "217503698558",
+      appId: "1:217503698558:web:c0fc1e87e369b0f5"
+    });
+
+    // console.log(Firebase);
+
+    // Firebase.auth().onAuthStateChanged(user => {
+    //   if(user)
+    //     this.setState({loggedIn: true});
+    //   else
+    //     this.setState({loggedIn: false});
+    // })
+
   }
+
+  // renderContent(){
+  //   if(this.state.loggedIn){
+  //     return(
+  //       <Text>Hello</Text>
+  //       // <ActivityFeed />
+  //     )
+  //   }
+  //   else {
+  //     return(
+  //       <Login />
+  //     )
+  //   }
+  // }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Sign In</Text>
-        <View style={styles.labelStyle}>
-          <Text>User Id</Text>
-          <TextInput style={styles.verticalStyle} onChangeText={(userIdText) => this.setState({userIdText})} placeholder={'Enter User Id'} value={this.state.userIdText}/>
+      <Provider store={store}>
+        <View style={{flex:1}}>
+          {/* <ScrollView> */}
+
+            {/* login */}
+            {/* {this.renderContent()} */}
+            <Router />
+            {/* Test codes */}
+            {/* <Showinfo /> */}
+          {/* </ScrollView> */}
+
         </View>
-        <View style={styles.labelStyle}>
-          <Text>Password</Text>
-          <TextInput secureTextEntry={true} style={styles.verticalStyle} onChangeText={(password) => this.setState({password})} placeholder={'Enter Password'} value={this.state.password}/>
-        </View>
-        <Button
-            onPress={this.onLogin.bind(this)}
-            title="Login"
-            color="#841584"
-          />
-      </View>
+      </Provider>
     );
   }
 }
